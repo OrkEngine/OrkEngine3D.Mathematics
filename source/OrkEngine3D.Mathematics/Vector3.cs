@@ -464,10 +464,10 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
     /// <param name="left">The first vector to add.</param>
     /// <param name="right">The second vector to add.</param>
     /// <param name="result">When the method completes, contains the sum of the two vectors.</param>
-    //public static void Add(ref Vector3 left, ref Vector3 right, out Vector3 result)
-    //{
-    //    result = new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
-    //}
+    public static void RefAdd(ref Vector3 left, ref Vector3 right, out Vector3 result)
+    {
+        result = new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+    }
 
     public static void Add(in Vector3 left, in Vector3 right, out Vector3 result)
     {
