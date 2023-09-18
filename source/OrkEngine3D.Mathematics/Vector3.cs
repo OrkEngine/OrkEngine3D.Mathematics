@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace OrkEngine3D.Mathematics;
 
@@ -147,18 +148,21 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
     /// Returns the length of the vector.
     /// </summary>
     /// <returns>The vector's length.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public float Length()
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float Length
     {
-        if (Vector.IsHardwareAccelerated)
+        get
         {
-            float ls = Vector3.Dot(this, this);
-            return (float)System.Math.Sqrt(ls);
-        }
-        else
-        {
-            float ls = X * X + Y * Y + Z * Z;
-            return (float)System.Math.Sqrt(ls);
+            if (Vector.IsHardwareAccelerated)
+            {
+                float ls = Vector3.Dot(this, this);
+                return (float)System.Math.Sqrt(ls);
+            }
+            else
+            {
+                float ls = X * X + Y * Y + Z * Z;
+                return (float)System.Math.Sqrt(ls);
+            }
         }
     }
 
@@ -213,11 +217,22 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
     }
 
     /// <summary>
+    /// Returns a copy of the Vector3 scaled to unit length.
+    /// </summary>
+    /// <returns>The normalized copy.</returns>
+    public Vector3 Normalized()
+    {
+        var v = this;
+        v.Normalize();
+        return v;
+    }
+
+    /// <summary>
     /// Converts the vector into a unit vector.
     /// </summary>
     public void Normalize()
     {
-        float length = Length();
+        float length = Length;
         if (length > Utilities.ZeroTolerance)
         {
             float inv = 1.0f / length;
@@ -449,9 +464,16 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
     /// <param name="left">The first vector to add.</param>
     /// <param name="right">The second vector to add.</param>
     /// <param name="result">When the method completes, contains the sum of the two vectors.</param>
-    public static void Add(ref Vector3 left, ref Vector3 right, out Vector3 result)
+    //public static void Add(ref Vector3 left, ref Vector3 right, out Vector3 result)
+    //{
+    //    result = new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+    //}
+
+    public static void Add(in Vector3 left, in Vector3 right, out Vector3 result)
     {
-        result = new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+        result.X = left.X + right.X;
+        result.Y = left.Y + right.Y;
+        result.Z = left.Z + right.Z;
     }
 
     /// <summary>
@@ -1632,6 +1654,8 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
         }
     }
 
+
+
     /// <summary>
     /// Adds two vectors.
     /// </summary>
@@ -1796,7 +1820,7 @@ public struct Vector3 : IEquatable<Vector3>, IFormattable
         if (format == null)
             return ToString();
 
-        return string.Format(CultureInfo.CurrentCulture, "X:{0} Y:{1} Z:{2}", X.ToString(format, CultureInfo.CurrentCulture), 
+        return string.Format(CultureInfo.CurrentCulture, "X:{0} Y:{1} Z:{2}", X.ToString(format, CultureInfo.CurrentCulture),
             Y.ToString(format, CultureInfo.CurrentCulture), Z.ToString(format, CultureInfo.CurrentCulture));
     }
 
